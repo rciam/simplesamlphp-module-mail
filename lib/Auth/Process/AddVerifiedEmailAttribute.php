@@ -20,13 +20,30 @@
 
 class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth_ProcessingFilter
 {
-
+    /**
+     * Attribute containing the user's email address(es)
+     * @var string
+     */
     private $emailAttribute = 'mail';
 
+   /**
+     * Attribute containing the user's verified email address(es)
+     * @var string
+     */
     private $verifiedEmailAttribute = 'voPersonVerifiedEmail';
 
+    /**
+     * List of Identity Provider entityIDs for selectively generating the
+     * user's verified email address(es). Only email address(es) from
+     * identity providers that exist in the include list will be processed.
+     * @var array
+     */
     private $idpEntityIdIncludeList = array();
 
+    /**
+     * Should the existing verified email attribute (if any) be replaced?
+     * @var bool
+     */
     private $replace = false;
 
     /**
