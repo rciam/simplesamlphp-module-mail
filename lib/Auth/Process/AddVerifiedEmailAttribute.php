@@ -141,8 +141,8 @@ class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth
         $state['Attributes'][$this->verifiedEmailAttribute] = $state['Attributes'][$this->emailAttribute];
         SimpleSAML_Logger::info("[mail:AddVerifiedEmailAttribute] process: Added " . $this->verifiedEmailAttribute . " attribute");
         SimpleSAML_Logger::debug("[mail:AddVerifiedEmailAttribute] process: output: " . $this->verifiedEmailAttribute . " = " . var_export($state['Attributes'][$this->verifiedEmailAttribute], true));
-        }
 
+        return;
     }
 
     private function getIdpEntityId($state)
