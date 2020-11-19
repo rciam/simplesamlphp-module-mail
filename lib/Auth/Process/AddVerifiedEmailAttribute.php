@@ -1,4 +1,7 @@
 <?php
+
+namespace SimpleSAML\Module\mail\Auth\Process;
+
 /**
  * Authentication processing filter for generating attribute containing
  * verified email addresses.
@@ -18,7 +21,7 @@
  * @package SimpleSAMLphp
  */
 
-class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth_ProcessingFilter
+class AddVerifiedEmailAttribute extends \SimpleSAML\Auth\ProcessingFilter
 {
     /**
      * Attribute containing the user's email address(es)
@@ -62,7 +65,7 @@ class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth
 
         if (array_key_exists('emailAttribute', $config)) {
             if (!is_string($config['emailAttribute'])) {
-                SimpleSAML_Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'emailAttribute' not a string literal");
+                SimpleSAML\Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'emailAttribute' not a string literal");
                 throw new Exception(
                     "AddVerifiedEmailAttribute configuration error: 'emailAttribute' not a string literal");
             }
@@ -71,7 +74,7 @@ class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth
 
         if (array_key_exists('verifiedEmailAttribute', $config)) {
             if (!is_string($config['verifiedEmailAttribute'])) {
-                SimpleSAML_Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'verifiedEmailAttribute' not a string literal");
+                SimpleSAML\Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'verifiedEmailAttribute' not a string literal");
                 throw new Exception(
                     "AddVerifiedEmailAttribute configuration error: 'verifiedEmailAttribute' not a string literal");
             }
@@ -80,7 +83,7 @@ class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth
 
         if (array_key_exists('idpEntityIdIncludeList', $config)) {
             if (!is_array($config['idpEntityIdIncludeList'])) {
-                SimpleSAML_Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'idpEntityIdIncludeList' not an array");
+                SimpleSAML\Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'idpEntityIdIncludeList' not an array");
                 throw new Exception(
                     "AddVerifiedEmailAttribute configuration error: 'idpEntityIdIncludeList' not an array");
             }
@@ -89,7 +92,7 @@ class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth
 
         if (array_key_exists('replace', $config)) {
             if (!is_bool($config['replace'])) {
-                SimpleSAML_Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'replace' not a boolean");
+                SimpleSAML\Logger::error("[mail:AddVerifiedEmailAttribute] Configuration error: 'replace' not a boolean");
                 throw new Exception(
                     "AddVerifiedEmailAttribute configuration error: 'replace' not a boolean value");
             }
@@ -110,14 +113,14 @@ class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth
 
         // Nothing to do if email attribute is missing
         if (empty($state['Attributes'][$this->emailAttribute])) {
-            SimpleSAML_Logger::debug("[mail:AddVerifiedEmailAttribute] process: Cannot generate " . $this->verifiedEmailAttribute . " attribute: " . $this->emailAttribute . " attribute is missing");
+            SimpleSAML\Logger::debug("[mail:AddVerifiedEmailAttribute] process: Cannot generate " . $this->verifiedEmailAttribute . " attribute: " . $this->emailAttribute . " attribute is missing");
             return;
         }
-        SimpleSAML_Logger::debug("[mail:AddVerifiedEmailAttribute] process: input: " . $this->emailAttribute . " = " . var_export($state['Attributes'][$this->emailAttribute], true));
+        SimpleSAML\Logger::debug("[mail:AddVerifiedEmailAttribute] process: input: " . $this->emailAttribute . " = " . var_export($state['Attributes'][$this->emailAttribute], true));
 
         // Nothing to do if verified email attribute already exists and replace is set to false
         if (!empty($state['Attributes'][$this->verifiedEmailAttribute]) && !$this->replace) {
-            SimpleSAML_Logger::debug("[mail:AddVerifiedEmailAttribute] process: Cannot replace existing " . $this->verifiedEmailAttribute . " attribute: replace is set to false");
+            SimpleSAML\Logger::debug("[mail:AddVerifiedEmailAttribute] process: Cannot replace existing " . $this->verifiedEmailAttribute . " attribute: replace is set to false");
             return;
         }
 
@@ -126,21 +129,21 @@ class sspmod_mail_Auth_Process_AddVerifiedEmailAttribute extends SimpleSAML_Auth
         // Check if idpEntityId is empty.
         // This should never happen - but if it does log an error message
         if (empty($idpEntityId)) {
-            SimpleSAML_Logger::error("[mail:AddVerifiedEmailAttribute] process: Failed to retrieve idpEntityId");
+            SimpleSAML\Logger::error("[mail:AddVerifiedEmailAttribute] process: Failed to retrieve idpEntityId");
             return;
         }
-        SimpleSAML_Logger::debug("[mail:AddVerifiedEmailAttribute] process: input: idpEntityId = " . var_export($idpEntityId, true));
+        SimpleSAML\Logger::debug("[mail:AddVerifiedEmailAttribute] process: input: idpEntityId = " . var_export($idpEntityId, true));
 
         // Nothing to do if idpEntityId not in include list
         if (!in_array($idpEntityId, $this->idpEntityIdIncludeList)) {
-            SimpleSAML_Logger::debug("[mail:AddVerifiedEmailAttribute] process: Will not generate " . $this->verifiedEmailAttribute . " attribute for IdP " . $idpEntityId);
+            SimpleSAML\Logger::debug("[mail:AddVerifiedEmailAttribute] process: Will not generate " . $this->verifiedEmailAttribute . " attribute for IdP " . $idpEntityId);
             return;
         }
 
         // Add verifiedEmailAttribute to state attributes
         $state['Attributes'][$this->verifiedEmailAttribute] = $state['Attributes'][$this->emailAttribute];
-        SimpleSAML_Logger::info("[mail:AddVerifiedEmailAttribute] process: Added " . $this->verifiedEmailAttribute . " attribute");
-        SimpleSAML_Logger::debug("[mail:AddVerifiedEmailAttribute] process: output: " . $this->verifiedEmailAttribute . " = " . var_export($state['Attributes'][$this->verifiedEmailAttribute], true));
+        SimpleSAML\Logger::info("[mail:AddVerifiedEmailAttribute] process: Added " . $this->verifiedEmailAttribute . " attribute");
+        SimpleSAML\Logger::debug("[mail:AddVerifiedEmailAttribute] process: output: " . $this->verifiedEmailAttribute . " = " . var_export($state['Attributes'][$this->verifiedEmailAttribute], true));
 
         return;
     }
