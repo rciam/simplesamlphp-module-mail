@@ -12,14 +12,14 @@ use SimpleSAML\Logger;
  *
  * Example configuration:
  *
- *    authproc = array(
+ *    authproc = [
  *       ...
- *       '61' => array(
+ *       '61' => [
  *            'class' => 'mail:AddVerifiedEmailAttribute',
  *            'emailAttribute' => 'email', // Optional, defaults to 'mail'
  *            'verifiedEmailAttribute' => 'verifiedEmail', // Optional, defaults to 'voPersonVerifiedEmail'
  *            'replace' => true,   // Optional, defaults to false
- *       ),
+ *       ],
  *
  * @author Nicolas Liampotis <nliam@grnet.gr>
  * @package SimpleSAMLphp
@@ -45,7 +45,7 @@ class AddVerifiedEmailAttribute extends ProcessingFilter
      * identity providers that exist in the include list will be processed.
      * @var array
      */
-    private $idpEntityIdIncludeList = array();
+    private $idpEntityIdIncludeList = [];
 
     /**
      * Should the existing verified email attribute (if any) be replaced?

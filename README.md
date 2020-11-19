@@ -1,4 +1,5 @@
 # simplesamlphp-module-mail
+
 A SimpleSAMLphp module for handling email information received from the identity provider.
 
 ## AddVerifiedEmailAttribute
@@ -17,18 +18,18 @@ The following authproc filter configuration options are supported:
 ### Example authproc filter configuration
 
 ```php
-    authproc = array(
+    authproc = [
         ...
-        'XX' => array(
+        'XX' => [
             'class' => 'mail:AddVerifiedEmailAttribute',
             'emailAttribute' => 'email',                 // Optional, defaults to 'mail'
             'verifiedEmailAttribute' => 'verifiedEmail', // Optional, defaults to 'voPersonVerifiedEmail'
             'replace' => true,                           // Optional, defaults to false
-            'idpEntityIdIncludeList' => array(
+            'idpEntityIdIncludeList' => [
                 'https://idp.example1.org',
                 'https://idp.example2.org',
-            ),                                           // Optional, defaults to empty array
-        )
+            ],                                           // Optional, defaults to empty array
+        ]
 ```
 
 ## Compatibility matrix
