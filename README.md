@@ -1,7 +1,11 @@
 # simplesamlphp-module-mail
 A SimpleSAMLphp module for handling email information received from the identity provider.
 
-## SimpleSAMLphp configuration
+## AddVerifiedEmailAttribute
+
+This filter adds a new attribute that contains the verified email address(es) of the user.
+
+### SimpleSAMLphp configuration
 
 The following authproc filter configuration options are supported:
 
