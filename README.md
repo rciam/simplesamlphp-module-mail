@@ -9,7 +9,7 @@ This filter adds a new attribute that contains the verified email address(es) of
 If scopeChecking is enabled, then filter will check if the domain part of the email is (sub) domain
  - of any of the scopes (regular expressions are not supported)
  - of the IdP endpoint
- - of schacHomeOrganization
+ - of home organization
 
 If any of the above is met then a new attribute will be added that will contain the verified email address(es) of the user.
 
@@ -22,8 +22,8 @@ The following authproc filter configuration options are supported:
 * `replace`: Optional, a boolean to use as flag, to replace `verifiedEmailAttribute` if exists. Defaults to `false`.
 * `idpEntityIdIncludeList`: Optional, an array of strings that contains entityIDs for which the module will generate the `verifiedEmailAttribute` attribute. Defaults to empty array.
 * `scopeChecking`: Optional, a boolean to use as flag, that indicates if scopes will be checked, in order to verify an email. Defaults to `false`.
-* `schacHomeOrganization`: Optional, a string to use as the name of the attribute that
-holds schacHomeOrganization. Defaults to 'schacHomeOrganization'.
+* `homeOrganizationAttribute`: Optional, a string to use as the name of the attribute that
+holds home organisation information. Defaults to 'schacHomeOrganization'.
 
 ### Example authproc filter configuration
 
@@ -40,7 +40,7 @@ holds schacHomeOrganization. Defaults to 'schacHomeOrganization'.
                 'https://idp.example2.org',
             ],                                           // Optional, defaults to empty array
             'scopeChecking' => true,                     // Optional, defaults to false
-            'schacHomeOrganization' => 'urn:oid:1.3.6.1.4.1.25178.1.2.9', // Optional, defaults to 'schacHomeOrganization'
+            'homeOrganizationAttribute' => 'urn:oid:1.3.6.1.4.1.25178.1.2.9', // Optional, defaults to 'schacHomeOrganization'
         ]
 ```
 

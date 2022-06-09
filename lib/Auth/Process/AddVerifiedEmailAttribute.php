@@ -21,7 +21,7 @@ use SimpleSAML\Utils;
  *            'verifiedEmailAttribute' => 'verifiedEmail', // Optional, defaults to 'voPersonVerifiedEmail'
  *            'replace' => true,   // Optional, defaults to false
  *            'scopeChecking' => true, // Optional, defaults to false
- *            'schacHomeOrganizationAttribute => 'urn:oid:1.3.6.1.4.1.25178.1.2.9', // Optional, defaults to 'schacHomeOrganization'
+ *            'homeOrganizationAttribute => 'urn:oid:1.3.6.1.4.1.25178.1.2.9', // Optional, defaults to 'schacHomeOrganization'
  *       ],
  *
  * @author Nicolas Liampotis <nliam@grnet.gr>
@@ -65,10 +65,10 @@ class AddVerifiedEmailAttribute extends ProcessingFilter
     private $scopeChecking = false;
 
     /**
-     * schacHomeOrganization Attribute 
+     * Home organization attribute 
      * @var string
      */
-    private $schacHomeOrganizationAttribute = 'schacHomeOrganization';
+    private $homeOrganizationAttribute = 'schacHomeOrganization';
 
     /**
      * Initialize this filter, parse configuration
@@ -145,16 +145,16 @@ class AddVerifiedEmailAttribute extends ProcessingFilter
             $this->scopeChecking = $config['scopeChecking'];
         }
 
-        if (array_key_exists('schacHomeOrganizationAttribute', $config)) {
-            if (!is_string($config['schacHomeOrganizationAttribute'])) {
+        if (array_key_exists('homeOrganizationAttribute', $config)) {
+            if (!is_string($config['homeOrganizationAttribute'])) {
                 Logger::error(
-                    "[mail:AddVerifiedEmailAttribute] Configuration error: 'schacHomeOrganizationAttribute' not a string"
+                    "[mail:AddVerifiedEmailAttribute] Configuration error: 'homeOrganizationAttribute' not a string"
                 );
                 throw new Exception(
-                    "AddVerifiedEmailAttribute configuration error: 'schacHomeOrganizationAttribute' not a string value"
+                    "AddVerifiedEmailAttribute configuration error: 'homeOrganizationAttribute' not a string value"
                 );
             }
-            $this->schacHomeOrganizationAttribute = $config['schacHomeOrganizationAttribute'];
+            $this->homeOrganizationAttribute = $config['homeOrganizationAttribute'];
         }
         
     }
@@ -204,7 +204,7 @@ class AddVerifiedEmailAttribute extends ProcessingFilter
             "[mail:AddVerifiedEmailAttribute] process: input: idpEntityId = " . var_export($idpEntityId, true)
         );
 
-        // If idpEntityId not in include list then check scopes, host url, schacHomeOrganization
+        // If idpEntityId not in include list then check scopes, host url, home organization
         if (!in_array($idpEntityId, $this->idpEntityIdIncludeList)) {
             if (!$this->scopeChecking) {
                 Logger::debug(
@@ -273,8 +273,10 @@ class AddVerifiedEmailAttribute extends ProcessingFilter
         if (array_key_exists('scope', $src) && is_array($src['scope']) && !empty($src['scope'])) {
             $validScopes = $src['scope'];
         }
-        $ep = Utils\Config\Metadata::getDefaultEndpoint($state['Source']['SingleSignOnService']);
-        $host = parse_url($ep['Location'], PHP_URL_HOST) ?? '';
+        if (!empty($state['Source']['SingleSignOnService'])) {
+            $ep = Utils\Config\Metadata::getDefaultEndpoint($state['Source']['SingleSignOnService']);
+            $host = parse_url($ep['Location'], PHP_URL_HOST) ?? '';
+        }
         $emailDomain = explode('@', $mail)[1];
         // Check if email domain is (sub) domain of valid scopes
         // or is (sub) domain of Idp endpoint
@@ -284,11 +286,11 @@ class AddVerifiedEmailAttribute extends ProcessingFilter
                 $verified_emails[] = $mail;
                 return true;
         }
-        // Check if email domain is (sub) domain of schacHomeOrganization
-        if (!empty($state['Attributes'][$this->schacHomeOrganizationAttribute]) && !empty($validScopes)) {
-            if (count($state['Attributes'][$this->schacHomeOrganizationAttribute])!=1) {
-                Logger::warning($this->schacHomeOrganizationAttribute . ' must be single valued.');
-            } else if (strpos($emailDomain, $state['Attributes'][$this->schacHomeOrganizationAttribute][0]) === strlen($emailDomain) - strlen($state['Attributes'][$this->schacHomeOrganizationAttribute][0])) {
+        // Check if email domain is (sub) domain of home organization attribute
+        if (!empty($state['Attributes'][$this->homeOrganizationAttribute]) && !empty($validScopes)) {
+            if (count($state['Attributes'][$this->homeOrganizationAttribute])!=1) {
+                Logger::warning($this->homeOrganizationAttribute . ' must be single valued.');
+            } else if (strpos($emailDomain, $state['Attributes'][$this->homeOrganizationAttribute][0]) === strlen($emailDomain) - strlen($state['Attributes'][$this->homeOrganizationAttribute][0])) {
                 $verified_emails[] = $mail;
                 return true;
             }
